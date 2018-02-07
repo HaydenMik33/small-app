@@ -1,1 +1,1 @@
-SELECT * FROM favorites;
+SELECT * FROM favorites ORDER BY name ASC;

@@ -10,8 +10,10 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
-        <Route exact path="/" component={CharacterList} />
-        <Route path="/favorites" component={FavoritesList} />
+        <Switch>
+          <Route exact path="/" component={CharacterList} />
+          <Route path="/favorites" component={FavoritesList} />
+        </Switch>
       </div>
     );
   }

@@ -20,6 +20,7 @@ app.get("/api/characters", StarWarsCtrl.getCharacters);
 app.post("/api/favorites/add", StarWarsCtrl.postCharacter);
 app.get("/api/favorites", StarWarsCtrl.getFavorites);
 app.put("/api/favorites/update", StarWarsCtrl.updateCharacter);
+app.delete("/api/favorites/:id", StarWarsCtrl.removeCharacter);
 
 app.listen(port, () => {
   console.log(`Listening on port: ${port}`);

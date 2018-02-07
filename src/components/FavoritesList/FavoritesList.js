@@ -11,6 +11,7 @@ class FavoritesList extends Component {
     };
 
     this.confirmChanges = this.confirmChanges.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   componentDidMount() {
@@ -31,11 +32,23 @@ class FavoritesList extends Component {
         species,
         planet
       })
-      .then(res => {
+      .then(() => {
+        axios.get("/api/favorites").then(res => {
+          this.setState({
+            list: res.data
+          });
+        });
+      });
+  }
+
+  handleRemove(id) {
+    axios.delete(`/api/favorites/${id}`).then(() => {
+      axios.get("/api/favorites").then(res => {
         this.setState({
           list: res.data
         });
       });
+    });
   }
 
   render() {
@@ -52,6 +65,7 @@ class FavoritesList extends Component {
           planet={character.planet}
           id={character.favorites_id}
           confirmChanges={this.confirmChanges}
+          handleRemove={this.handleRemove}
         />
       );
     });

@@ -7,8 +7,12 @@ class CharacterList extends Component {
     super(props);
 
     this.state = {
-      list: []
+      list: [],
+      count: 1,
+      prev: false
     };
+    this.grabNext = this.grabNext.bind(this);
+    this.grabPrev = this.grabPrev.bind(this);
   }
 
   componentDidMount() {
@@ -19,8 +23,31 @@ class CharacterList extends Component {
       });
     });
   }
+
+  grabPrev() {
+    const { prev, count } = this.state;
+    axios.get(`/api/characters/?page=${count - 1}`).then(res => {
+      this.setState({
+        list: res.data,
+        count: count - 1
+      });
+    });
+    if (count === 2) this.setState({ prev: !prev });
+  }
+
+  grabNext() {
+    const { prev, count } = this.state;
+    axios.get(`/api/characters/?page=${count + 1}`).then(res => {
+      this.setState({
+        list: res.data,
+        count: count + 1,
+        prev: true
+      });
+    });
+  }
+
   render() {
-    const { list } = this.state;
+    const { list, next, prev } = this.state;
     console.log(list);
     let characters = list.map((character, index) => {
       return (
@@ -37,6 +64,10 @@ class CharacterList extends Component {
     return (
       <div className="App">
         <div className="App-intro">{characters}</div>
+        <button disabled={!prev} onClick={this.grabPrev}>
+          Previous Characters
+        </button>
+        <button onClick={this.grabNext}>More Characters</button>
       </div>
     );
   }
