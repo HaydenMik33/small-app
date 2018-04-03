@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { connect } from "react-redux";
 import { getCharacters, getPage } from "../../ducks/characters";
 import Character from "./Character/Character";
@@ -30,7 +29,7 @@ class CharacterList extends Component {
   }
 
   grabNext() {
-    const { prev, count } = this.state;
+    const { count } = this.state;
     this.props.getPage(count + 1);
     this.setState({
       count: count + 1,
@@ -72,7 +71,11 @@ class CharacterList extends Component {
   }
 }
 
-const mapStateToProps = state => state;
+const mapStateToProps = state => {
+  return {
+    characters: state.characters
+  };
+};
 
 export default connect(mapStateToProps, { getCharacters, getPage })(
   CharacterList

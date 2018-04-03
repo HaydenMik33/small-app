@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const NEW_TITLE = "NEW_TITLE";
 const GET_CHARACTERS = "GET_CHARACTERS";
 const GET_PAGE = "GET_PAGE";
 const ADD_FAVORITES = "ADD_FAVORITES";
@@ -11,8 +12,16 @@ const initialState = {
   characters: [],
   favorites: [],
   loading: false,
-  error: ""
+  error: "",
+  title: ""
 };
+
+export function newTitle(val) {
+  return {
+    type: NEW_TITLE,
+    payload: val
+  };
+}
 
 export function getCharacters() {
   return {
@@ -75,6 +84,8 @@ export function deleteFavorites(id) {
 
 export default function characters(state = initialState, action) {
   switch (action.type) {
+    case `NEW_TITLE`:
+      return Object.assign({}, state, { title: action.payload });
     //GET CHARACTERS ASYNC
     case `${GET_CHARACTERS}_PENDING`:
       return {
@@ -180,5 +191,7 @@ export default function characters(state = initialState, action) {
         ...state,
         error: action.payload
       };
+    default:
+      return state;
   }
 }

@@ -30,7 +30,7 @@ class Character extends Component {
   render() {
     // console.log(this.state.species);
     // console.log(this.state.planet);
-    const { name, birth, gender, addFavorites, loading, error } = this.props;
+    const { name, birth, gender, addFavorites } = this.props;
     const { species, planet } = this.state;
     return (
       <div>
