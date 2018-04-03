@@ -1,76 +1,38 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
+import { getFavorites } from "../../ducks/characters";
 import Favorite from "./Favorite/Favorite";
 
 class FavoritesList extends Component {
   constructor(props) {
-    super(props);
-
-    this.state = {
-      list: []
-    };
-
-    this.confirmChanges = this.confirmChanges.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
+    super();
   }
 
   componentDidMount() {
-    axios.get("/api/favorites").then(res => {
-      this.setState({
-        list: res.data
-      });
-    });
-  }
-
-  confirmChanges(id, name, birth, gender, species, planet) {
-    axios
-      .put("/api/favorites/update", {
-        id,
-        name,
-        birth,
-        gender,
-        species,
-        planet
-      })
-      .then(() => {
-        axios.get("/api/favorites").then(res => {
-          this.setState({
-            list: res.data
-          });
-        });
-      });
-  }
-
-  handleRemove(id) {
-    axios.delete(`/api/favorites/${id}`).then(() => {
-      axios.get("/api/favorites").then(res => {
-        this.setState({
-          list: res.data
-        });
-      });
-    });
+    this.props.getFavorites();
   }
 
   render() {
-    const { list } = this.state;
-    console.log(list);
-    let favorites = list.map((character, index) => {
+    const { favorites = [], loading } = this.props;
+    let list = favorites.map((character, index) => {
       return (
         <Favorite
-          key={index}
+          key={character.favorites_id}
           name={character.name}
           birth={character.birth}
           gender={character.gender}
           species={character.species}
           planet={character.planet}
           id={character.favorites_id}
-          confirmChanges={this.confirmChanges}
-          handleRemove={this.handleRemove}
         />
       );
     });
-    return <div>{favorites}</div>;
+    return <div>{loading ? <h6>Page Loading</h6> : list}</div>;
   }
 }
 
-export default FavoritesList;
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, {
+  getFavorites
+})(FavoritesList);

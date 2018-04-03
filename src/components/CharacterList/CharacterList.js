@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { getCharacters, getPage } from "../../ducks/characters";
 import Character from "./Character/Character";
 
 class CharacterList extends Component {
@@ -7,7 +9,6 @@ class CharacterList extends Component {
     super(props);
 
     this.state = {
-      list: [],
       count: 1,
       prev: false
     };
@@ -16,40 +17,32 @@ class CharacterList extends Component {
   }
 
   componentDidMount() {
-    axios.get("/api/characters").then(res => {
-      //   console.log(res);
-      this.setState({
-        list: res.data
-      });
-    });
+    this.props.getCharacters();
   }
 
   grabPrev() {
     const { prev, count } = this.state;
-    axios.get(`/api/characters/?page=${count - 1}`).then(res => {
-      this.setState({
-        list: res.data,
-        count: count - 1
-      });
+    this.props.getPage(count - 1);
+    this.setState({
+      count: count - 1
     });
     if (count === 2) this.setState({ prev: !prev });
   }
 
   grabNext() {
     const { prev, count } = this.state;
-    axios.get(`/api/characters/?page=${count + 1}`).then(res => {
-      this.setState({
-        list: res.data,
-        count: count + 1,
-        prev: true
-      });
+    this.props.getPage(count + 1);
+    this.setState({
+      count: count + 1,
+      prev: true
     });
   }
 
   render() {
-    const { list, next, prev } = this.state;
-    console.log(list);
-    let characters = list.map((character, index) => {
+    console.log(this.props);
+    const { prev } = this.state;
+    const { characters = [], loading } = this.props;
+    let list = characters.map((character, index) => {
       return (
         <Character
           key={index}
@@ -63,14 +56,28 @@ class CharacterList extends Component {
     });
     return (
       <div className="App">
-        <div className="App-intro">{characters}</div>
-        <button disabled={!prev} onClick={this.grabPrev}>
-          Previous Characters
-        </button>
-        <button onClick={this.grabNext}>More Characters</button>
+        <div className="App-intro">{list}</div>
+        {loading ? (
+          <h6>Page Loading</h6>
+        ) : (
+          <div>
+            <button disabled={!prev} onClick={this.grabPrev}>
+              Previous Characters
+            </button>
+            <button onClick={this.grabNext}>More Characters</button>
+          </div>
+        )}
       </div>
     );
   }
 }
 
-export default CharacterList;
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, { getCharacters, getPage })(
+  CharacterList
+);
+
+//Conect function is listening to each change in the state.
+//When change occurs, it calls the function mapStateToProps(),
+//Within mapStateToProps() we specify exactly which parts of the state we want to provide to this component.

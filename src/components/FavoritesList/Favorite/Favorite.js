@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
+import { updateFavorites, deleteFavorites } from "../../../ducks/characters";
 import ChooseSide from "./ChooseSide/ChooseSide";
 
 class Favorite extends Component {
@@ -14,8 +15,8 @@ class Favorite extends Component {
       newSpecies: this.props.species,
       newPlanet: this.props.planet,
       darkSide: false,
-      lightSide: false,
-      updatedText: ""
+      lightSide: false
+      // updatedText: ""
     };
 
     this.toggleEdit = this.toggleEdit.bind(this);
@@ -38,9 +39,9 @@ class Favorite extends Component {
   }
 
   handleSubmit() {
-    const { id, confirmChanges } = this.props;
+    const { id, updateFavorites } = this.props;
     const { newName, newBirth, newGender, newSpecies, newPlanet } = this.state;
-    confirmChanges(id, newName, newBirth, newGender, newSpecies, newPlanet);
+    updateFavorites(id, newName, newBirth, newGender, newSpecies, newPlanet);
     this.toggleEdit();
   }
 
@@ -61,13 +62,13 @@ class Favorite extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.name !== this.props.name) {
-      this.setState({
-        updatedText: "UPDATED NAME"
-      });
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.name !== this.props.name) {
+  //     this.setState({
+  //       updatedText: "UPDATED NAME"
+  //     });
+  //   }
+  // }
 
   render() {
     const {
@@ -77,7 +78,7 @@ class Favorite extends Component {
       gender,
       species,
       planet,
-      handleRemove
+      deleteFavorites
     } = this.props;
     const {
       newName,
@@ -86,9 +87,9 @@ class Favorite extends Component {
       newSpecies,
       newPlanet,
       darkSide,
-      lightSide
+      lightSide,
+      edit
     } = this.state;
-    const { edit } = this.state;
 
     return (
       <div>
@@ -145,11 +146,15 @@ class Favorite extends Component {
             <button onClick={this.handleSubmit}>Save Changes</button>
           </div>
         )}
-        <button onClick={() => handleRemove(id)}>Remove Character</button>
+        <button onClick={() => deleteFavorites(id)}>Remove Character</button>
         <br />
         <br />
       </div>
     );
   }
 }
-export default Favorite;
+
+const mapStateToProps = state => state;
+export default connect(mapStateToProps, { updateFavorites, deleteFavorites })(
+  Favorite
+);

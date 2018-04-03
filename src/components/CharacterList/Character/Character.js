@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { connect } from "react-redux";
+import { addFavorites } from "../../../ducks/characters";
 
 class Character extends Component {
   constructor(props) {
@@ -9,8 +11,6 @@ class Character extends Component {
       species: "",
       planet: ""
     };
-
-    this.handleAdd = this.handleAdd.bind(this);
   }
 
   componentDidMount() {
@@ -27,20 +27,10 @@ class Character extends Component {
     });
   }
 
-  handleAdd(name, birth, gender, species, planet) {
-    axios.post("/api/favorites/add", {
-      name,
-      birth,
-      gender,
-      species,
-      planet
-    });
-  }
-
   render() {
     // console.log(this.state.species);
     // console.log(this.state.planet);
-    const { name, birth, gender } = this.props;
+    const { name, birth, gender, addFavorites, loading, error } = this.props;
     const { species, planet } = this.state;
     return (
       <div>
@@ -50,7 +40,7 @@ class Character extends Component {
         <p>Species: {species} </p>
         <p>Planet: {planet}</p>
         <button
-          onClick={() => this.handleAdd(name, birth, gender, species, planet)}
+          onClick={() => addFavorites(name, birth, gender, species, planet)}
         >
           Add to Favorites
         </button>
@@ -59,4 +49,7 @@ class Character extends Component {
     );
   }
 }
-export default Character;
+
+const mapStateToProps = state => state;
+
+export default connect(mapStateToProps, { addFavorites })(Character);
